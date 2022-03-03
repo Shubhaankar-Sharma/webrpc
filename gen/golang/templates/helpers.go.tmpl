@@ -289,6 +289,27 @@ var (
 	MethodNameCtxKey = &contextKey{"MethodName"}
 )
 
+func WithHTTPRequestHeaders(ctx context.Context, h http.Header) (context.Context, error) {
+	if _, ok := h["Accept"]; ok {
+		return nil, errors.New("provided header cannot set Accept")
+	}
+	if _, ok := h["Content-Type"]; ok {
+		return nil, errors.New("provided header cannot set Content-Type")
+	}
+
+	copied := make(http.Header, len(h))
+	for k, vv := range h {
+		if vv == nil {
+			copied[k] = nil
+			continue
+		}
+		copied[k] = make([]string, len(vv))
+		copy(copied[k], vv)
+	}
+
+	return context.WithValue(ctx, HTTPClientRequestHeadersCtxKey, copied), nil
+}
+
 func HTTPRequestHeaders(ctx context.Context) (http.Header, bool) {
 	h, ok := ctx.Value(HTTPClientRequestHeadersCtxKey).(http.Header)
 	return h, ok
