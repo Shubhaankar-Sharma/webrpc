@@ -237,6 +237,7 @@ func methodOutputs(in []*schema.MethodArgument) (string, error) {
 	for i := range in {
 		outputs = append(outputs, methodArgType(in[i]))
 	}
+	outputs = append(outputs, "context.Context")
 	outputs = append(outputs, "error")
 	return strings.Join(outputs, ", "), nil
 }

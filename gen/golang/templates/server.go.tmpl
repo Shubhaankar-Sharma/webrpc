@@ -103,7 +103,7 @@ type WebRPCServer interface {
             panic(rr)
           }
         }()
-        {{argsList .Outputs "ret"}}{{.Outputs | commaIfLen}} err = s.{{$name}}.{{.Name}}(ctx{{.Inputs | commaIfLen}}{{argsList .Inputs "reqContent.Arg"}})
+        {{argsList .Outputs "ret"}}{{.Outputs | commaIfLen}} ctx, err = s.{{$name}}.{{.Name}}(ctx{{.Inputs | commaIfLen}}{{argsList .Inputs "reqContent.Arg"}})
       }()
       {{- if .Outputs | len}}
       respContent := struct {
@@ -128,7 +128,6 @@ type WebRPCServer interface {
       {{- end}}
 
       w.Header().Set("Content-Type", "application/json")
-      w.WriteHeader(http.StatusOK)
       if headers, ok := HTTPRequestHeaders(ctx); ok {
         for k := range headers {
           for _, v := range headers[k] {
@@ -136,6 +135,7 @@ type WebRPCServer interface {
           }
         }
       }
+      w.WriteHeader(http.StatusOK)
 
       {{- if .Outputs | len}}
       w.Write(respBody)
