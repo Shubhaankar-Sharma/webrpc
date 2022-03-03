@@ -129,6 +129,13 @@ type WebRPCServer interface {
 
       w.Header().Set("Content-Type", "application/json")
       w.WriteHeader(http.StatusOK)
+      if headers, ok := HTTPRequestHeaders(ctx); ok {
+        for k := range headers {
+          for _, v := range headers[k] {
+            w.Header().Add(k, v)
+          }
+        }
+      }
 
       {{- if .Outputs | len}}
       w.Write(respBody)

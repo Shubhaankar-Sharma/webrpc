@@ -289,4 +289,9 @@ var (
 	MethodNameCtxKey = &contextKey{"MethodName"}
 )
 
+func HTTPRequestHeaders(ctx context.Context) (http.Header, bool) {
+	h, ok := ctx.Value(HTTPClientRequestHeadersCtxKey).(http.Header)
+	return h, ok
+}
+
 {{end}}
