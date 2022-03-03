@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/0xsequence/go-sequence/relayer/proto"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
@@ -47,12 +46,6 @@ func (s *ExampleServiceRPC) Status(ctx context.Context) (bool, error) {
 }
 
 func (s *ExampleServiceRPC) Version(ctx context.Context) (*Version, error) {
-	headers := http.Header{}
-	headers.Set("API-Version", WebRPCSchemaVersion())
-	ctx, err := proto.WithHTTPRequestHeaders(ctx, headers)
-	if err != nil {
-		panic(err.Error())
-	}
 	return &Version{
 		WebrpcVersion: WebRPCVersion(),
 		SchemaVersion: WebRPCSchemaVersion(),
